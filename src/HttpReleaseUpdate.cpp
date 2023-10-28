@@ -1,3 +1,4 @@
+#ifdef OTA
 #include "HttpReleaseUpdate.h"
 
 #include <StreamString.h>
@@ -190,3 +191,4 @@ bool HttpReleaseUpdate::runUpdate(Stream& in, uint32_t size) {
 
     return true;
 }
+#endif

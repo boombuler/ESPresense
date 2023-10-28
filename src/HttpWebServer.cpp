@@ -169,6 +169,7 @@ void Init(AsyncWebServer *server) {
 
 void Loop() { ws.cleanupClients(); }
 
+#ifdef OTA
 void UpdateStart() {
     ws.enable(false);
     ws.textAll("OTA Update Started");
@@ -176,6 +177,7 @@ void UpdateStart() {
 }
 
 void UpdateEnd() { ws.enable(true); }
+#endif
 
 void SendState() { sendDataWs(nullptr); }
 

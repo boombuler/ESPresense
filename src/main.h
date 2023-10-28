@@ -15,14 +15,16 @@
 #include "CAN.h"
 #include "Enrollment.h"
 #include "GUI.h"
+#ifdef OTA
 #include "HttpReleaseUpdate.h"
+#include "Updater.h"
+#endif
 #include "HttpWebServer.h"
 #include "Motion.h"
 #include "Switch.h"
 #include "Button.h"
 #include "Network.h"
 #include "SerialImprov.h"
-#include "Updater.h"
 #include "defaults.h"
 #include "globals.h"
 #include "mqtt.h"

@@ -22,7 +22,9 @@ bool sendTelemetry(unsigned int totalSeen, unsigned int totalFpSeen, int unsigne
             && pub((roomsTopic + "/known_macs").c_str(), 0, true, BleFingerprintCollection::knownMacs.c_str())
             && pub((roomsTopic + "/known_irks").c_str(), 0, true, BleFingerprintCollection::knownIrks.c_str())
             && pub((roomsTopic + "/count_ids").c_str(), 0, true, BleFingerprintCollection::countIds.c_str())
+#ifdef OTA            
             && Updater::SendOnline()
+#endif
             && Motion::SendOnline()
             && Switch::SendOnline()
             && Button::SendOnline()
@@ -43,8 +45,9 @@ bool sendTelemetry(unsigned int totalSeen, unsigned int totalFpSeen, int unsigne
             && sendButtonDiscovery("Restart", EC_DIAGNOSTIC)
             && sendNumberDiscovery("Max Distance", EC_CONFIG)
             && sendNumberDiscovery("Absorption", EC_CONFIG)
-
+#ifdef OTA
             && Updater::SendDiscovery()
+#endif
             && GUI::SendDiscovery()
             && Motion::SendDiscovery()
             && Switch::SendDiscovery()
@@ -149,9 +152,10 @@ void setupNetwork() {
     publishRooms = AsyncWiFiSettings.checkbox("pub_rooms_dep", false, "Send to rooms topic (deprecated in v4)");
     publishDevices = AsyncWiFiSettings.checkbox("pub_devices", true, "Send to devices topic");
 
+#ifdef OTA
     AsyncWiFiSettings.heading("<a href='https://espresense.com/configuration/settings#updating' target='_blank'>Updating</a>", false);
     Updater::ConnectToWifi();
-
+#endif
     AsyncWiFiSettings.info("<a href='ui/#settings' target='_blank'>Click here to edit other settings!</a>", false);
 
     AsyncWiFiSettings.markExtra();
@@ -331,8 +335,10 @@ void onMqttMessage(const char *topic, const char *payload) {
             changed = true;
         else if (Enrollment::Command(command, pay))
             changed = true;
+#ifdef OTA            
         else if (Updater::Command(command, pay))
             changed = true;
+#endif
         else if (Motion::Command(command, pay))
             changed = true;
         else if (Switch::Command(command, pay))
@@ -539,7 +545,9 @@ void setup() {
     BleFingerprintCollection::Setup();
     SPIFFS.begin(true);
     setupNetwork();
+#ifdef OTA    
     Updater::Setup();
+#endif
 #if NTP
     setClock();
 #endif
@@ -576,7 +584,9 @@ void loop() {
         lastSlowLoop = millis();
         auto freeHeap = ESP.getFreeHeap();
         if (freeHeap < 20000) Serial.printf("Low memory: %u bytes free\r\n", freeHeap);
+#ifdef OTA        
         if (freeHeap > 70000) Updater::Loop();
+#endif
     }
     GUI::Loop();
     Motion::Loop();

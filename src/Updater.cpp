@@ -1,3 +1,4 @@
+#ifdef OTA
 #include <Arduino.h>
 #include <ArduinoOTA.h>
 #include <SPIFFS.h>
@@ -209,3 +210,4 @@ bool Command(String& command, String& pay) {
     return true;
 }
 }  // namespace Updater
+#endif
