@@ -286,7 +286,10 @@ void setupNetwork() {
     teleTopic = roomsTopic + "/telemetry";
     setTopic = roomsTopic + "/+/set";
     configTopic = CHANNEL + String("/settings/+/config");
-    AsyncWiFiSettings.httpSetup();
+
+    Switch::SetupConfigSwitch();
+    if (enableConfigUI)
+        AsyncWiFiSettings.httpSetup();
 }
 
 void onMqttConnect(bool sessionPresent) {
@@ -541,7 +544,7 @@ void setup() {
     AXP192::Setup();
 #endif
 
-    GUI::Setup(true);
+    GUI::Setup(true);    
     BleFingerprintCollection::Setup();
     SPIFFS.begin(true);
     setupNetwork();

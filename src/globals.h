@@ -35,6 +35,7 @@ _DECL String localIp;
 _DECL AsyncWebSocket ws _INIT_N((("/ws")));
 _DECL bool enrolling;
 _DECL unsigned long enrollingEndMillis;
+_DECL bool enableConfigUI;
 
 // I2C
 _DECL bool I2C_Bus_1_Started;

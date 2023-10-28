@@ -23,10 +23,33 @@ int8_t lastswitch_2Value = -1;
 unsigned long lastswitch_2Milli = 0;
 bool online;
 
+int8_t switch_CfgType, switch_CfgPin, switch_CfgDetected = -1;
+
+bool SetupPinMode(int8_t pin, int8_t type) {
+    if (pin >= 0) 
+    {
+        std::vector<uint8_t> pinTypes = {INPUT_PULLUP, INPUT_PULLUP, INPUT_PULLDOWN, INPUT_PULLDOWN, INPUT, INPUT};
+        pinMode(pin, pinTypes[type]);
+        return true;
+    }
+    return false;
+}
+
 void Setup() {
-    std::vector<uint8_t> pinTypes = {INPUT_PULLUP, INPUT_PULLUP, INPUT_PULLDOWN, INPUT_PULLDOWN, INPUT, INPUT};
-    if (switch_1Pin >= 0) pinMode(switch_1Pin, pinTypes[switch_1Type]);
-    if (switch_2Pin >= 0) pinMode(switch_2Pin, pinTypes[switch_2Type]);
+    SetupPinMode(switch_1Pin, switch_1Type);
+    SetupPinMode(switch_2Pin, switch_2Type);
+}
+
+void SetupConfigSwitch() {
+    if (SetupPinMode(switch_CfgPin, switch_CfgType)) {
+        delay(50);
+        enableConfigUI = digitalRead(switch_CfgPin) == switch_CfgDetected;
+        Serial.print("Config Switch: ");
+        Serial.println(enableConfigUI ? "enabled" : "disabled");
+    } else {
+        enableConfigUI = true;
+        Serial.println("Config enabled w/o switch");
+    }
 }
 
 void ConnectToWifi() {
@@ -40,6 +63,10 @@ void ConnectToWifi() {
     switch_2Pin = AsyncWiFiSettings.integer("switch_2_pin", -1, "Switch Two pin (-1 for disable)");
     switch_2Timeout = AsyncWiFiSettings.floating("switch_2_timeout", 0, 300, DEFAULT_DEBOUNCE_TIMEOUT, "Switch Two timeout (in seconds)");
     switch_2Detected = switch_2Type & 0x01 ? LOW : HIGH;
+
+    switch_CfgType = AsyncWiFiSettings.dropdown("switch_cfg_type", pinTypes, 0, "Config Switch pin type");
+    switch_CfgPin = AsyncWiFiSettings.integer("switch_cfg_pin", -1, "Config Switch pin (-1 for disable)");
+    switch_CfgDetected = switch_CfgType & 0x01 ? LOW : HIGH;    
 }
 
 void SerialReport() {

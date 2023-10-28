@@ -31,7 +31,9 @@ void commonDiscovery()
 #ifdef FIRMWARE
     doc["dev"]["mf"] = "ESPresense (" FIRMWARE ")";
 #endif
-    doc["dev"]["cu"] = "http://" + localIp;
+
+    if (enableConfigUI)
+        doc["dev"]["cu"] = "http://" + localIp;
     doc["dev"]["mdl"] = String(ESP.getChipModel());
 }
 
