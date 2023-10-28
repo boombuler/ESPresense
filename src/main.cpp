@@ -132,6 +132,8 @@ void setupNetwork() {
     WiFi.setScanMethod(WIFI_ALL_CHANNEL_SCAN);
     GUI::Connected(false, false);
 
+    AsyncWiFiSettings.secure = true;
+
 #ifdef VERSION
     AsyncWiFiSettings.info("ESPresense Version: " + String(VERSION));
 #endif
